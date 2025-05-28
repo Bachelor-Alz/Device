@@ -1,4 +1,3 @@
-// Serialisation.h
 #ifndef SERIALISATION_H
 #define SERIALISATION_H
 

@@ -2,7 +2,6 @@
 #define MAX30102_H
 
 #include "gps.h"
-//vin sda scl gnd
 
 struct MAX30102Reading {
   int32_t heartRate;

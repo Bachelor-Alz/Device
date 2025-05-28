@@ -32,15 +32,11 @@ inline void sendIMUReading(Print& out, const IMUReading& reading) {
 }
 
 void postInitialGPS(WiFiClient& client, const char* server, int port, const String& endpoint);
-
 void beginIMUSend(WiFiClient& client, const char* server, int port, const String& endpoint,
                   IMUReading* readings, int count, SendState& state);
-
 bool handleClientSend(WiFiClient& client, SendState& state);
-
+void processSendState(WiFiClient& imuClient, WiFiClient& maxClient, SendState& state);
 void sendMAX30102Batch(WiFiClient& client, const char* server, int port, const String& endpoint,
                        const MAX30102Batch& batch, SendState& state);
-
-String getIMUReadingJSON(const IMUReading& reading);
 
 #endif

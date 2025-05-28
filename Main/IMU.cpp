@@ -1,5 +1,5 @@
 #include "IMU.h"
-#include <math.h> // for sqrt
+#include <math.h>
 
 static int steps = 0;
 static bool wasAbove = false;
