@@ -1,4 +1,4 @@
-# Embedded Sensor Streamer
+## HealthDevice: Arduino Setup and Configuration
 
 A compact Arduino-based data acquisition system designed to stream IMU, GPS, and biometric sensor data via HTTP. Built on the **Arduino Nano 33 IoT**, this project interfaces with multiple onboard and external sensors and supports network transmission over Wi-Fi.
 
