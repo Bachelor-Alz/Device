@@ -6,7 +6,7 @@ const long GPSBaud = 9600;
 
 void initGPS() {
   Serial1.begin(GPSBaud);
-  delay(100);
+  delay(100);  // Give some time for the GPS module to start sending data
   if (Serial1.available()) {
     Serial.println("GPS initialised");
   } else {

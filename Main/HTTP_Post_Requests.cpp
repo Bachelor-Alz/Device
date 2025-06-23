@@ -9,7 +9,7 @@ extern const char* macAddress;
 void postInitialGPS(WiFiClient& client, const char* server, int port, const String& endpoint) {
   Serial.println("Waiting for GPS fix before posting initial location...");
 
-  const unsigned long timeout = 300000; // 5 minutes
+  const unsigned long timeout = 900000; // 15 minutes
   unsigned long start = millis();
 
   GPSReading gps;
@@ -55,6 +55,7 @@ void postInitialGPS(WiFiClient& client, const char* server, int port, const Stri
     Serial.println("Initial GPS fix posted:");
     Serial.println(payload);
 
+    // Wait for headers to finish
     while (client.connected()) {
       String line = client.readStringUntil('\n');
       if (line == "\r") break;
@@ -76,7 +77,7 @@ public:
 
 void beginIMUSend(WiFiClient& client, const char* server, int port, const String& endpoint,
                   IMUReading* readings, int count, SendState& state) {
-// Calculate content length
+// STEP 1: Calculate content length
   LengthCalculator calc;
   calc.print("{\"mac\":\"");
   calc.print(macAddress);
@@ -88,6 +89,7 @@ void beginIMUSend(WiFiClient& client, const char* server, int port, const String
   calc.print("]}");
   int contentLength = calc.len;
 
+  // STEP 2: Connect and send
   Serial.print("Connecting to server: ");
   Serial.print(server);
   Serial.print(":");
@@ -107,7 +109,7 @@ void beginIMUSend(WiFiClient& client, const char* server, int port, const String
     client.println(F("Connection: close"));
     client.println();
 
-    // Stream JSON data
+    // STEP 3: Stream JSON data
     client.print("{\"mac\":\"");
     client.print(macAddress);
     client.print("\",\"readings\":[");
@@ -138,15 +140,6 @@ bool handleClientSend(WiFiClient& client, SendState& state) {
     }
   }
   return false;
-}
-
-void processSendState(WiFiClient& imuClient, WiFiClient& maxClient, SendState& state) {
-  handleClientSend(imuClient, state);
-  handleClientSend(maxClient, state);
-
-  if (state == Done) {
-    state = Idle;
-  }
 }
 
 void sendMAX30102Batch(WiFiClient& client, const char* server, int port, const String& endpoint,

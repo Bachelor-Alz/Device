@@ -1,5 +1,15 @@
 #include "Serialisation.h"
 
+void serialiseIMUReading(JsonArray& array, const IMUReading& reading) {
+  JsonObject obj = array.createNestedObject();
+  obj["ax"] = reading.ax;
+  obj["ay"] = reading.ay;
+  obj["az"] = reading.az;
+  obj["gx"] = reading.gx;
+  obj["gy"] = reading.gy;
+  obj["gz"] = reading.gz;
+}
+
 void serialiseIMUBuffer(JsonArray& array, IMUReading* buffer, int count) {
   for (int i = 0; i < count; ++i) {
     serialiseIMUReading(array, buffer[i]);

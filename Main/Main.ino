@@ -6,20 +6,25 @@
 #include "HTTP_Post_Requests.h"
 #include <WiFiNINA.h>
 
+// Network Clients
 WiFiClient imuClient;
 WiFiClient maxClient;
 
+// Constants
 const int maxIMUSamples = 750;
 const int maxMAXSamples = 20;
-const unsigned long imuInterval = 20;
+const unsigned long imuInterval = 20;         // 50 Hz
 unsigned long lastIMUSampleTime = 0;
 int sampleCountIMU = 0;
 int imuSendCount = 0;
 int sampleCountMAX = 0;
 
+// Buffers
 IMUReading imuBuffer[maxIMUSamples];
 MAX30102Reading maxBuffer[maxMAXSamples];
 
+// Sending
+// Batching and Step Counter
 const unsigned long batchInterval = 5 * 60 * 1000; // 5 minutes
 unsigned long lastBatchSend = 0;
 MAX30102Batch maxBatch;
@@ -57,19 +62,25 @@ void setup() {
 void loop() {
   unsigned long now = millis();
 
+  if (sampleCountIMU < maxIMUSamples && (now - lastIMUSampleTime >= imuInterval)) {
+  lastIMUSampleTime = now;
+
   if (readIMU(imuBuffer[sampleCountIMU])) {
+    //Serial.print("Buffered IMU #");
+    //Serial.println(sampleCountIMU + 1);
     sampleCountIMU++;
-  }   
+    }
+  }
 
-  if (sampleCountIMU >= maxIMUSamples && sendState == Idle) {
-    int steps = getStepCount();
-    Serial.print("Estimated Steps: ");
-    Serial.println(steps);
-    Serial.println("Sending IMU data...");
+if (sampleCountIMU >= maxIMUSamples && sendState == Idle) {
+  int steps = getStepCount();
+  Serial.print("Estimated Steps: ");
+  Serial.println(steps);
+  Serial.println("Sending IMU data...");
 
-    beginIMUSend(imuClient, HOST, AI_API_PORT, IMU_ENDPOINT,
-      imuBuffer, sampleCountIMU, sendState);
-    sampleCountIMU = 0;
+  beginIMUSend(imuClient, HOST, AI_API_PORT, IMU_ENDPOINT,
+               imuBuffer, sampleCountIMU, sendState);
+  sampleCountIMU = 0;
 
   // Take one MAX30102 reading immediately after IMU send
   if (sampleCountMAX < maxMAXSamples) {

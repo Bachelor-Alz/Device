@@ -20,7 +20,7 @@ void initMAX30102() {
   particleSensor.setPulseAmplitudeRed(0x3F);
   particleSensor.setPulseAmplitudeIR(0x3F);
   particleSensor.setPulseAmplitudeGreen(0);
-  Serial.println("Place finger on the sensor.");
+  Serial.println("MAX30102 initialised.");
 }
 
 bool readMAX30102(int32_t &heartRate, int8_t &validHeartRate, int32_t &spo2, int8_t &validSPO2) {
